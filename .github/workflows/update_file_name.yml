@@ -1,0 +1,33 @@
+name: Update Database File Name
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # 每天早上9点35运行
+
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: sudo apt-get install -y rename
+
+      - name: Rename database file
+        run: |
+          DATE_YESTERDAY=$(date -d "yesterday" +"%m-%d")
+          DATE_TODAY=$(date +"%m-%d")
+          FILE_YESTERDAY="数据库${DATE_YESTERDAY}.kdbx"
+          FILE_TODAY="数据库${DATE_TODAY}.kdbx"
+          rename "s/$FILE_YESTERDAY/$FILE_TODAY/" *.kdbx
+
+      - name: Commit and push if it changed
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          if [[ $(git diff --stat --staged) != '' ]]; then
+            git commit -m "Renamed database file"
+            git push
+          fi
