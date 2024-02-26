@@ -16,11 +16,8 @@ jobs:
 
       - name: Rename database file
         run: |
-          DATE_YESTERDAY=$(date -d "yesterday" +"%m-%d")
-          DATE_TODAY=$(date +"%m-%d")
-          FILE_YESTERDAY="数据库${DATE_YESTERDAY}.kdbx"
           FILE_TODAY="数据库${DATE_TODAY}.kdbx"
-          rename "s/$FILE_YESTERDAY/$FILE_TODAY/" *.kdbx
+          rename "s/数据库.*\.kdbx/$FILE_TODAY/" *.kdbx
 
       - name: Commit and push if it changed
         run: |
