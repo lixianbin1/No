@@ -22,15 +22,16 @@ jobs:
 
       - name: Rename database file
         run: |
+          DATE_TODAY=$(date +"%m-%d")
           FILE_TODAY="数据库${DATE_TODAY}.kdbx"
-          rename "s/数据库.*\.kdbx/$FILE_TODAY/" *.kdbx
+          rename "s/数据库*\.kdbx/$FILE_TODAY/" *.kdbx
 
-      - name: Set up Git
+      - name: Commit and push if it changed
         run: |
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git config --global credential.helper store
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
           git add -A
-          git commit -m "Renamed database file"
-          git remote set-url origin git@github.com:lixianbin1/No.git
-          git push
+          if [[ $(git diff --stat --staged) != '' ]]; then
+            git commit -m "Renamed database file"
+            git push
+          fi
