@@ -2,7 +2,7 @@ name: Update Database File Name
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 每天早上9点35运行
+    - cron: '0 0 * * *' # 每天早上8点运行
 
 jobs:
   rename:
@@ -19,12 +19,11 @@ jobs:
           FILE_TODAY="数据库${DATE_TODAY}.kdbx"
           rename "s/数据库.*\.kdbx/$FILE_TODAY/" *.kdbx
 
-      - name: Commit and push if it changed
+      - name: Set up Git
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git config --global credential.helper store
           git add -A
-          if [[ $(git diff --stat --staged) != '' ]]; then
-            git commit -m "Renamed database file"
-            git push
-          fi
+          git commit -m "Renamed database file"
+          git push
