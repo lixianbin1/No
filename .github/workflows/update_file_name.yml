@@ -32,4 +32,5 @@ jobs:
           git config --global credential.helper store
           git add -A
           git commit -m "Renamed database file"
+          git remote set-url origin git@github.com:lixianbin1/No.git
           git push
